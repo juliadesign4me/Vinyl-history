@@ -30,7 +30,7 @@ const Home = () => {
           width: 460,
           height: 460,
           marginLeft: -230,
-          bottom: 140,
+          bottom: 145,
           perspective: 900,
         }}
       >
