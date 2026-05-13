@@ -20,12 +20,11 @@ const Home = () => {
   return (
     <main
       data-testid="home-page"
-      onClick={replay}
-      className="relative min-h-screen w-full bg-neutral-950 bg-no-repeat bg-center bg-contain overflow-hidden cursor-pointer"
+      className="relative min-h-screen w-full bg-neutral-950 bg-no-repeat bg-center bg-contain overflow-hidden"
       style={{ backgroundImage: `url(${BG_URL})` }}
     >
       <div
-        className="absolute left-1/2 pointer-events-none"
+        className="absolute left-1/2"
         style={{
           width: 460,
           height: 460,
@@ -37,7 +36,8 @@ const Home = () => {
         <div
           ref={diskRef}
           data-testid="vinyl-disk"
-          className="vinyl-disk"
+          onClick={replay}
+          className="vinyl-disk cursor-pointer"
           style={{ width: 460, height: 460 }}
         >
           <img
