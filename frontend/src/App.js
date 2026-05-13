@@ -57,7 +57,7 @@ const Home = () => {
     const parentRect = parent.getBoundingClientRect();
     const pivot = {
       x: parentRect.left + wrap.offsetLeft + wrap.offsetWidth / 2,
-      y: parentRect.top + wrap.offsetTop,
+      y: parentRect.top + wrap.offsetTop + 25,
     };
     const startMouseAngle =
       (Math.atan2(e.clientY - pivot.y, e.clientX - pivot.x) * 180) / Math.PI;
@@ -107,7 +107,7 @@ const Home = () => {
           height: 455,
           left: "calc(50% + 238px)",
           bottom: 139,
-          transformOrigin: "50% 0%",
+          transformOrigin: "50% 25px",
           transform: `rotate(${armAngle}deg)`,
           willChange: "transform",
           touchAction: "none",
