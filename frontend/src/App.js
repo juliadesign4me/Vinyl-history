@@ -12,7 +12,7 @@ const Home = () => {
   const diskRef = useRef(null);
   const armWrapRef = useRef(null);
   const dragRef = useRef(null);
-  const [armAngle, setArmAngle] = useState(0); // 0deg = rest, -90deg = full CCW
+  const [armAngle, setArmAngle] = useState(0); // 0deg = rest, +90deg = full CW (drag right)
 
   const replay = () => {
     const el = diskRef.current;
@@ -31,8 +31,8 @@ const Home = () => {
       const { pivot, startMouseAngle, startArmAngle } = dragRef.current;
       const a = toDeg(Math.atan2(e.clientY - pivot.y, e.clientX - pivot.x));
       let next = startArmAngle + (a - startMouseAngle);
-      if (next > 0) next = 0;
-      if (next < -90) next = -90;
+      if (next < 0) next = 0;
+      if (next > 90) next = 90;
       setArmAngle(next);
     };
     const onUp = () => {
