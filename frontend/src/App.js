@@ -12,7 +12,13 @@ const Home = () => {
   const diskRef = useRef(null);
   const armWrapRef = useRef(null);
   const dragRef = useRef(null);
+  const armAngleRef = useRef(0);
   const [armAngle, setArmAngle] = useState(0); // 0deg = rest, +90deg = full CW (drag right)
+  const [isSpinning, setIsSpinning] = useState(false);
+
+  useEffect(() => {
+    armAngleRef.current = armAngle;
+  }, [armAngle]);
 
   const replay = () => {
     const el = diskRef.current;
@@ -36,8 +42,11 @@ const Home = () => {
       setArmAngle(next);
     };
     const onUp = () => {
+      if (!dragRef.current) return;
       dragRef.current = null;
       document.body.style.userSelect = "";
+      // If the tonearm has moved enough to "land on the disk", spin it
+      if (armAngleRef.current >= 30) setIsSpinning(true);
     };
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
@@ -50,6 +59,8 @@ const Home = () => {
   const onArmMouseDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    // Lifting the tonearm pauses the disk
+    setIsSpinning(false);
     const wrap = armWrapRef.current;
     if (!wrap) return;
     // Compute pivot from layout (not bounding rect) so it doesn't drift while rotated
@@ -91,7 +102,7 @@ const Home = () => {
           <img
             src="/assets/vinyl-disk.png"
             alt="vinyl disk"
-            className="w-full h-full block select-none"
+            className={`w-full h-full block select-none ${isSpinning ? "vinyl-spin" : ""}`}
             draggable={false}
           />
         </div>

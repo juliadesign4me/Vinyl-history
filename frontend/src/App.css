@@ -40,6 +40,21 @@
     animation: vinyl-flip 1.5s 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+@keyframes vinyl-rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.vinyl-spin {
+    animation: vinyl-rotate 4s linear infinite;
+    transform-origin: center center;
+    will-change: transform;
+}
+
 @keyframes App-logo-spin {
     from {
         transform: rotate(0deg);
