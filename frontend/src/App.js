@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import "@/App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -5,20 +6,48 @@ const BG_URL =
   "https://customer-assets.emergentagent.com/job_139e49d9-ed0d-4528-9378-55c2a07ab8fa/artifacts/9jbks09n_2026s.png";
 
 const Home = () => {
+  const diskRef = useRef(null);
+
+  const replay = () => {
+    const el = diskRef.current;
+    if (!el) return;
+    el.style.animation = "none";
+    // force reflow so the animation restarts cleanly
+    void el.offsetHeight;
+    el.style.animation = "vinyl-flip 1.5s cubic-bezier(0.4,0,0.2,1) forwards";
+  };
+
   return (
     <main
       data-testid="home-page"
-      className="relative min-h-screen w-full bg-neutral-950 bg-no-repeat bg-center bg-contain overflow-hidden"
+      onClick={replay}
+      className="relative min-h-screen w-full bg-neutral-950 bg-no-repeat bg-center bg-contain overflow-hidden cursor-pointer"
       style={{ backgroundImage: `url(${BG_URL})` }}
     >
-      <img
-        data-testid="vinyl-disk"
-        src="/assets/vinyl-disk.png"
-        alt="vinyl disk"
-        className="absolute top-1/2 left-1/2 pointer-events-none select-none object-contain animate-vinyl-spin"
-        style={{ width: 460, height: 460, marginLeft: -230, marginTop: -230 }}
-        draggable={false}
-      />
+      <div
+        className="absolute top-1/2 left-1/2 pointer-events-none"
+        style={{
+          width: 460,
+          height: 460,
+          marginLeft: -230,
+          marginTop: -230,
+          perspective: 900,
+        }}
+      >
+        <div
+          ref={diskRef}
+          data-testid="vinyl-disk"
+          className="vinyl-disk"
+          style={{ width: 460, height: 460 }}
+        >
+          <img
+            src="/assets/vinyl-disk.png"
+            alt="vinyl disk"
+            className="w-full h-full block select-none"
+            draggable={false}
+          />
+        </div>
+      </div>
     </main>
   );
 };

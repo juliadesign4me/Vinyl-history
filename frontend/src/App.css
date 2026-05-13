@@ -24,19 +24,20 @@
     color: #61dafb;
 }
 
-@keyframes vinyl-spin {
-    from {
-        transform: rotate(0deg);
+@keyframes vinyl-flip {
+    0% {
+        transform: rotateX(90deg);
     }
-    to {
-        transform: rotate(360deg);
+    100% {
+        transform: rotateX(0deg);
     }
 }
 
-.animate-vinyl-spin {
-    animation: vinyl-spin 6s linear infinite;
+.vinyl-disk {
+    transform: rotateX(90deg);
     transform-origin: center center;
     will-change: transform;
+    animation: vinyl-flip 1.5s 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes App-logo-spin {
