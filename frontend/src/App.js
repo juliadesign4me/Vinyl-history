@@ -15,7 +15,8 @@ const Home = () => {
         data-testid="vinyl-disk"
         src="/assets/vinyl-disk.png"
         alt="vinyl disk"
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none select-none w-auto h-auto max-w-[90vw] max-h-[90vh] object-contain"
+        className="absolute top-1/2 left-1/2 pointer-events-none select-none object-contain animate-vinyl-spin"
+        style={{ width: 460, height: 460, marginLeft: -230, marginTop: -230 }}
         draggable={false}
       />
     </main>
