@@ -48,6 +48,20 @@ const Home = () => {
           />
         </div>
       </div>
+
+      <img
+        data-testid="tonearm"
+        src="https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/3rh1ej02_2020%20torn.png"
+        alt="tonearm"
+        draggable={false}
+        className="absolute select-none pointer-events-none"
+        style={{
+          width: 128,
+          height: 455,
+          left: "calc(50% + 238px)",
+          bottom: 139,
+        }}
+      />
     </main>
   );
 };
