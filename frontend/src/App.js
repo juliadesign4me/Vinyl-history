@@ -25,11 +25,11 @@ const Home = () => {
       style={{ backgroundImage: `url(${BG_URL})` }}
     >
       <div
-        className="absolute pointer-events-none"
+        className="absolute left-1/2 pointer-events-none"
         style={{
           width: 460,
           height: 460,
-          left: 789,
+          marginLeft: -230,
           bottom: 140,
           perspective: 900,
         }}
