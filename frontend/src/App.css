@@ -51,6 +51,7 @@
 
 .vinyl-spin {
     animation: vinyl-rotate 4s linear infinite;
+    animation-play-state: paused;
     transform-origin: center center;
     will-change: transform;
 }

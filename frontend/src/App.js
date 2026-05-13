@@ -102,7 +102,8 @@ const Home = () => {
           <img
             src="/assets/vinyl-disk.png"
             alt="vinyl disk"
-            className={`w-full h-full block select-none ${isSpinning ? "vinyl-spin" : ""}`}
+            className="w-full h-full block select-none vinyl-spin"
+            style={{ animationPlayState: isSpinning ? "running" : "paused" }}
             draggable={false}
           />
         </div>
