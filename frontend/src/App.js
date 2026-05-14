@@ -240,40 +240,45 @@ const Home = () => {
             { y: 223, label: "1970s" },
             { y: 399, label: "2000s" },
             { y: 575, label: "2020s" },
-          ].map(({ y, label }) => (
-            <div key={y}>
-              <div
-                data-testid={`tick-${y}`}
-                className="absolute"
-                style={{
-                  left: pct(34, 231),
-                  top: pct(y, 622),
-                  transform: "translateY(-50%)",
-                  width: pct(63, 231),
-                  height: pct(2, 622),
-                  background: "#FFF",
-                  borderRadius: `${(4 / STAGE_W) * 100}cqw`,
-                }}
-              />
-              <span
-                data-testid={`label-${label}`}
-                className="absolute text-white select-none pointer-events-none"
-                style={{
-                  left: pct(97, 231),
-                  top: pct(y, 622),
-                  transform: "translateY(-50%)",
-                  fontFamily: '"Instrument Serif", serif',
-                  fontSize: `${(30 / STAGE_W) * 100}cqw`,
-                  lineHeight: 1,
-                  fontWeight: 400,
-                  textTransform: "lowercase",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {label}
-              </span>
-            </div>
-          ))}
+          ].map(({ y, label }, idx) => {
+            const active = idx === pageIndex;
+            const fontPx = active ? 60 : 30;
+            return (
+              <div key={y}>
+                <div
+                  data-testid={`tick-${y}`}
+                  className="absolute"
+                  style={{
+                    left: pct(34, 231),
+                    top: pct(y, 622),
+                    transform: "translateY(-50%)",
+                    width: pct(63, 231),
+                    height: pct(2, 622),
+                    background: "#FFF",
+                    borderRadius: `${(4 / STAGE_W) * 100}cqw`,
+                  }}
+                />
+                <span
+                  data-testid={`label-${label}`}
+                  className="absolute text-white select-none pointer-events-none"
+                  style={{
+                    left: pct(113, 231),
+                    top: pct(y, 622),
+                    transform: "translateY(-50%)",
+                    fontFamily: '"Instrument Serif", serif',
+                    fontSize: `${(fontPx / STAGE_W) * 100}cqw`,
+                    lineHeight: 1,
+                    fontWeight: 400,
+                    textTransform: "lowercase",
+                    whiteSpace: "nowrap",
+                    transition: "font-size 200ms ease",
+                  }}
+                >
+                  {label}
+                </span>
+              </div>
+            );
+          })}
           <img
             src="/assets/slider-thumb.svg"
             alt=""
