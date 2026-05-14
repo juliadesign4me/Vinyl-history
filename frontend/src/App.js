@@ -14,8 +14,8 @@ const TONEARM_URL =
 const STAGE_W = 2048;
 const STAGE_H = 1152;
 
-// Mobile stage matches the mobile bg artwork (880 x 1912 ≈ iPhone 16/17 Pro Max).
-const MOBILE_STAGE_W = 880;
+// Mobile stage matches the mobile bg artwork (1000 x 1912 ≈ iPhone 16/17 Pro Max).
+const MOBILE_STAGE_W = 1000;
 const MOBILE_STAGE_H = 1912;
 
 // Mobile/desktop breakpoint (portrait phone vs everything else)
