@@ -245,7 +245,6 @@ const Home = () => {
                   fontWeight: 400,
                   textTransform: "lowercase",
                   letterSpacing: 0,
-                  outline: "1px solid red",
                 }
               : {
                   left: pct(337, stageW),
@@ -283,14 +282,13 @@ const Home = () => {
               ? {
                   left: 0,
                   right: 0,
-                  top: pct(60 + 60 + 16 + 30 + 40 + 16, stageH),
+                  top: pct(60 + 60 + 16 + 30 + 40 + 16 - 6, stageH),
                   width: "100%",
                   textAlign: "center",
                   fontFamily: '"Abyssinica SIL", serif',
                   fontSize: "18px",
                   lineHeight: "normal",
                   fontWeight: 400,
-                  outline: "1px solid red",
                 }
               : {
                   left: pct(337, stageW),
