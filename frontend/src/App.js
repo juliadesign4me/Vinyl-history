@@ -245,6 +245,7 @@ const Home = () => {
                   fontWeight: 400,
                   textTransform: "lowercase",
                   letterSpacing: 0,
+                  outline: "1px solid red",
                 }
               : {
                   left: pct(337, stageW),
@@ -289,6 +290,7 @@ const Home = () => {
                   fontSize: "18px",
                   lineHeight: "normal",
                   fontWeight: 400,
+                  outline: "1px solid red",
                 }
               : {
                   left: pct(337, stageW),
