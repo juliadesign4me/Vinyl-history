@@ -168,7 +168,7 @@ const Home = () => {
         return;
       }
       // eslint-disable-next-line no-undef, no-console
-      console.log("[YT] init player");
+      if (process.env.NODE_ENV !== "production") console.log("[YT] init player");
       // eslint-disable-next-line no-undef
       ytPlayerRef.current = new window.YT.Player("yt-player-host", {
         height: "1",
@@ -184,7 +184,7 @@ const Home = () => {
           onReady: () => {
             ytReadyRef.current = true;
             // eslint-disable-next-line no-console
-            console.log("[YT] ready");
+            if (process.env.NODE_ENV !== "production") console.log("[YT] ready");
             try {
               ytPlayerRef.current.unMute();
               ytPlayerRef.current.setVolume(80);
