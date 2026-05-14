@@ -306,7 +306,7 @@ const Home = () => {
             className="absolute"
             style={{
               left: "50%",
-              bottom: pct(110, stageH),
+              bottom: `calc(${pct(110, stageH)} + 20%)`,
               transform: "translateX(-50%)",
               width: 400,
               height: 11,
