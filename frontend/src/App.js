@@ -90,6 +90,41 @@ const Home = () => {
     armAngleRef.current = armAngle;
   }, [armAngle]);
 
+  // Preload every era's bg / vinyl / tonearm on mount so switching pages is instant.
+  useEffect(() => {
+    const urls = [
+      BG_URL,
+      BG_2000S_URL,
+      BG_1970S_URL,
+      BG_1940S_URL,
+      MOBILE_BG_URL,
+      MOBILE_BG_2000S_URL,
+      MOBILE_BG_1970S_URL,
+      MOBILE_BG_1940S_URL,
+      TONEARM_URL,
+      TONEARM_2000S_URL,
+      TONEARM_1970S_URL,
+      TONEARM_1940S_URL,
+      "/assets/vinyl-disk.png",
+      "/assets/vinyl-disk-2000s.png",
+      "/assets/vinyl-disk-1970s.png",
+      "/assets/vinyl-disk-1940s.png",
+      "/assets/slider-thumb.svg",
+    ];
+    const imgs = urls.map((src) => {
+      const i = new Image();
+      i.decoding = "async";
+      i.src = src;
+      return i;
+    });
+    return () => {
+      // Cancel pending requests (browser will keep cached ones)
+      imgs.forEach((i) => {
+        i.src = "";
+      });
+    };
+  }, []);
+
   // When user switches era, replay the flip-in for the new disk (with 2s pause).
   const firstRenderRef = useRef(true);
   useEffect(() => {
@@ -276,6 +311,8 @@ const Home = () => {
           src={bgUrl}
           alt=""
           draggable={false}
+          decoding="async"
+          fetchpriority="high"
           className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
         />
 
@@ -568,6 +605,7 @@ const Home = () => {
                   : "/assets/vinyl-disk.png"
               }
               alt="vinyl disk"
+              decoding="async"
               className="w-full h-full block select-none vinyl-spin"
               style={{
                 animationPlayState: isSpinning ? "running" : "paused",
@@ -610,6 +648,7 @@ const Home = () => {
             }
             alt="tonearm"
             draggable={false}
+            decoding="async"
             className="w-full h-full block pointer-events-none select-none"
           />
         </div>
