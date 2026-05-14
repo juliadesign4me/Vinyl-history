@@ -199,36 +199,74 @@ const Home = () => {
         <h1
           data-testid="hero-heading"
           className="absolute m-0 text-white select-none pointer-events-none"
-          style={{
-            left: pct(337, stageW),
-            top: pct(375, stageH),
-            fontFamily: '"Instrument Serif", serif',
-            fontSize: `${(110 / stageW) * 100}cqw`,
-            lineHeight: 90 / 110,
-            fontWeight: 400,
-            textTransform: "lowercase",
-            letterSpacing: 0,
-          }}
+          style={
+            isMobile
+              ? {
+                  left: 0,
+                  right: 0,
+                  top: pct(60, stageH),
+                  width: "100%",
+                  textAlign: "center",
+                  fontFamily: '"Instrument Serif", serif',
+                  fontSize: `${(64 / stageW) * 100}cqw`,
+                  lineHeight: 1,
+                  fontWeight: 400,
+                  textTransform: "lowercase",
+                  letterSpacing: 0,
+                }
+              : {
+                  left: pct(337, stageW),
+                  top: pct(375, stageH),
+                  fontFamily: '"Instrument Serif", serif',
+                  fontSize: `${(110 / stageW) * 100}cqw`,
+                  lineHeight: 90 / 110,
+                  fontWeight: 400,
+                  textTransform: "lowercase",
+                  letterSpacing: 0,
+                }
+          }
         >
-          the
-          <br />
-          time
-          <br />
-          <em style={{ fontStyle: "italic" }}>player</em>
+          {isMobile ? (
+            <>
+              the time <em style={{ fontStyle: "italic" }}>player</em>
+            </>
+          ) : (
+            <>
+              the
+              <br />
+              time
+              <br />
+              <em style={{ fontStyle: "italic" }}>player</em>
+            </>
+          )}
         </h1>
 
         {/* Subtitle */}
         <p
           data-testid="hero-subtitle"
           className="absolute m-0 text-white select-none pointer-events-none"
-          style={{
-            left: pct(337, stageW),
-            top: pct(375 + 90 * 3 + 30, stageH),
-            fontFamily: '"Abyssinica SIL", serif',
-            fontSize: `${(26 / stageW) * 100}cqw`,
-            lineHeight: "normal",
-            fontWeight: 400,
-          }}
+          style={
+            isMobile
+              ? {
+                  left: 0,
+                  right: 0,
+                  top: pct(60 + 64 + 16, stageH),
+                  width: "100%",
+                  textAlign: "center",
+                  fontFamily: '"Abyssinica SIL", serif',
+                  fontSize: `${(18 / stageW) * 100}cqw`,
+                  lineHeight: "normal",
+                  fontWeight: 400,
+                }
+              : {
+                  left: pct(337, stageW),
+                  top: pct(375 + 90 * 3 + 30, stageH),
+                  fontFamily: '"Abyssinica SIL", serif',
+                  fontSize: `${(26 / stageW) * 100}cqw`,
+                  lineHeight: "normal",
+                  fontWeight: 400,
+                }
+          }
         >
           Travel through music history.
         </p>
