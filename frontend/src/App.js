@@ -64,6 +64,25 @@ const useIsMobile = () => {
   return isMobile;
 };
 
+// Era playlists — YouTube video IDs. Each track plays for ~30s before auto-rotation.
+// (IDs are best-guess from public YouTube; swap any that get geo-blocked or unavailable.)
+const TRACKS_BY_ERA = {
+  0: [
+    { id: "ZEcqHA7dbwM", title: "Frank Sinatra — Fly Me to the Moon" },
+    {
+      id: "nRiKkAB0OcQ",
+      title: "Ella Fitzgerald & Louis Armstrong — Dream a Little Dream of Me",
+    },
+    {
+      id: "6dhkqVgo86o",
+      title: "The Andrews Sisters — Boogie Woogie Bugle Boy",
+    },
+    { id: "WUCbGY32hHE", title: "Billie Holiday — I'll Be Seeing You" },
+  ],
+};
+
+const TRACK_PREVIEW_SECONDS = 30;
+
 const Home = () => {
   const isMobile = useIsMobile();
   const diskRef = useRef(null);
@@ -85,6 +104,112 @@ const Home = () => {
   ];
   const [pageIndex, setPageIndex] = useState(3); // 0=1940s, 1=1970s, 2=2000s, 3=2020s (current)
   const thumbTopPct = SNAP_TOPS_PCT[pageIndex];
+
+  // YouTube IFrame player (era-specific 30s previews, rotating through tracks)
+  const ytPlayerRef = useRef(null);
+  const ytReadyRef = useRef(false);
+  const trackTimerRef = useRef(null);
+  const currentTrackIdRef = useRef(null);
+
+  // Lazy-load the YouTube IFrame API + build a hidden player on mount.
+  useEffect(() => {
+    if (!window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
+    }
+    const initPlayer = () => {
+      if (ytPlayerRef.current) return;
+      // eslint-disable-next-line no-undef
+      ytPlayerRef.current = new window.YT.Player("yt-player-host", {
+        height: "1",
+        width: "1",
+        playerVars: {
+          controls: 0,
+          disablekb: 1,
+          modestbranding: 1,
+          rel: 0,
+          playsinline: 1,
+        },
+        events: {
+          onReady: () => {
+            ytReadyRef.current = true;
+          },
+        },
+      });
+    };
+    if (window.YT && window.YT.Player) {
+      initPlayer();
+    } else {
+      const prev = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (typeof prev === "function") prev();
+        initPlayer();
+      };
+    }
+    return () => {
+      if (trackTimerRef.current) clearTimeout(trackTimerRef.current);
+    };
+  }, []);
+
+  const playRandomTrackForEra = (era) => {
+    if (!ytReadyRef.current || !ytPlayerRef.current) {
+      // Player not ready yet — try again shortly
+      trackTimerRef.current = setTimeout(
+        () => playRandomTrackForEra(era),
+        400
+      );
+      return;
+    }
+    const tracks = TRACKS_BY_ERA[era];
+    if (!tracks || !tracks.length) return;
+    let next;
+    let attempts = 0;
+    do {
+      next = tracks[Math.floor(Math.random() * tracks.length)];
+      attempts++;
+    } while (
+      tracks.length > 1 &&
+      next.id === currentTrackIdRef.current &&
+      attempts < 10
+    );
+    currentTrackIdRef.current = next.id;
+    try {
+      ytPlayerRef.current.loadVideoById({
+        videoId: next.id,
+        startSeconds: 0,
+        endSeconds: TRACK_PREVIEW_SECONDS,
+      });
+    } catch (_) {}
+    if (trackTimerRef.current) clearTimeout(trackTimerRef.current);
+    trackTimerRef.current = setTimeout(
+      () => playRandomTrackForEra(era),
+      TRACK_PREVIEW_SECONDS * 1000
+    );
+  };
+
+  const stopMusic = () => {
+    if (trackTimerRef.current) {
+      clearTimeout(trackTimerRef.current);
+      trackTimerRef.current = null;
+    }
+    currentTrackIdRef.current = null;
+    if (ytPlayerRef.current && ytPlayerRef.current.stopVideo) {
+      try {
+        ytPlayerRef.current.stopVideo();
+      } catch (_) {}
+    }
+  };
+
+  // Start / stop era music when the disk starts / stops spinning.
+  useEffect(() => {
+    if (isSpinning && TRACKS_BY_ERA[pageIndex]) {
+      playRandomTrackForEra(pageIndex);
+    } else {
+      stopMusic();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSpinning, pageIndex]);
 
   useEffect(() => {
     armAngleRef.current = armAngle;
@@ -298,6 +423,20 @@ const Home = () => {
       data-testid={isMobile ? "home-page-mobile" : "home-page"}
       className="relative min-h-screen w-full bg-neutral-950 flex items-center justify-center overflow-hidden"
     >
+      {/* Hidden YouTube iframe host (audio-only usage) */}
+      <div
+        id="yt-player-host"
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          width: 1,
+          height: 1,
+          opacity: 0,
+          pointerEvents: "none",
+          left: -9999,
+          top: -9999,
+        }}
+      />
       <div
         data-testid={isMobile ? "stage-mobile" : "stage"}
         className="relative"
