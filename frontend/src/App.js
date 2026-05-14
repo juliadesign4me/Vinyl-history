@@ -70,14 +70,14 @@ const TRACKS_BY_ERA = {
   0: [
     { id: "ZEcqHA7dbwM", title: "Frank Sinatra — Fly Me to the Moon" },
     {
-      id: "nRiKkAB0OcQ",
+      id: "OAVZuSoP8dk",
       title: "Ella Fitzgerald & Louis Armstrong — Dream a Little Dream of Me",
     },
     {
-      id: "6dhkqVgo86o",
+      id: "8of3uhG1tCI",
       title: "The Andrews Sisters — Boogie Woogie Bugle Boy",
     },
-    { id: "WUCbGY32hHE", title: "Billie Holiday — I'll Be Seeing You" },
+    { id: "3C5zYKIuoxg", title: "Billie Holiday — I'll Be Seeing You" },
   ],
 };
 
@@ -110,6 +110,8 @@ const Home = () => {
   const ytReadyRef = useRef(false);
   const trackTimerRef = useRef(null);
   const currentTrackIdRef = useRef(null);
+  const currentEraRef = useRef(null);
+  const playRandomTrackRef = useRef(() => {});
 
   // Lazy-load the YouTube IFrame API + build a hidden player on mount.
   useEffect(() => {
@@ -134,6 +136,27 @@ const Home = () => {
         events: {
           onReady: () => {
             ytReadyRef.current = true;
+            try {
+              ytPlayerRef.current.unMute();
+              ytPlayerRef.current.setVolume(80);
+            } catch (_) {}
+          },
+          onError: (e) => {
+            // 2 = invalid id, 5 = HTML5 player error, 100 = removed, 101/150 = embed disallowed
+            // eslint-disable-next-line no-console
+            console.warn(
+              "[YT] error",
+              e && e.data,
+              "for id",
+              currentTrackIdRef.current
+            );
+            // Skip to next track sooner
+            if (trackTimerRef.current) clearTimeout(trackTimerRef.current);
+            trackTimerRef.current = setTimeout(() => {
+              if (currentEraRef.current !== null) {
+                playRandomTrackRef.current(currentEraRef.current);
+              }
+            }, 500);
           },
         },
       });
@@ -153,8 +176,8 @@ const Home = () => {
   }, []);
 
   const playRandomTrackForEra = (era) => {
+    currentEraRef.current = era;
     if (!ytReadyRef.current || !ytPlayerRef.current) {
-      // Player not ready yet — try again shortly
       trackTimerRef.current = setTimeout(
         () => playRandomTrackForEra(era),
         400
@@ -180,6 +203,8 @@ const Home = () => {
         startSeconds: 0,
         endSeconds: TRACK_PREVIEW_SECONDS,
       });
+      ytPlayerRef.current.unMute && ytPlayerRef.current.unMute();
+      ytPlayerRef.current.setVolume && ytPlayerRef.current.setVolume(80);
     } catch (_) {}
     if (trackTimerRef.current) clearTimeout(trackTimerRef.current);
     trackTimerRef.current = setTimeout(
@@ -188,7 +213,11 @@ const Home = () => {
     );
   };
 
+  // Expose the latest version of playRandomTrackForEra to the YT error handler.
+  playRandomTrackRef.current = playRandomTrackForEra;
+
   const stopMusic = () => {
+    currentEraRef.current = null;
     if (trackTimerRef.current) {
       clearTimeout(trackTimerRef.current);
       trackTimerRef.current = null;
