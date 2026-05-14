@@ -485,7 +485,7 @@ const Home = () => {
           style={{
             left: "50%",
             bottom: pct(145, stageH),
-            width: isMobile ? 300 : pct(460, stageW),
+            width: isMobile ? 270 : pct(460, stageW),
             aspectRatio: "1 / 1",
             transform: "translateX(-50%)",
             perspective: "60vw",
