@@ -80,6 +80,27 @@ const TRACKS_BY_ERA = {
     },
     { id: "KQNnIHNHnnY", title: "Billie Holiday — I'll Be Seeing You" },
   ],
+  1: [
+    // 1970s — verified embeddable lyric uploads
+    { id: "5zLnaNY58j8", title: "Queen — Bohemian Rhapsody" },
+    { id: "3qiMJt-JBb4", title: "ABBA — Dancing Queen" },
+    { id: "WlgoUlOkyzU", title: "Bee Gees — Stayin' Alive" },
+    { id: "cZQ0q1s2y-s", title: "Donna Summer — I Feel Love" },
+  ],
+  2: [
+    // 2000s — verified embeddable lyric uploads
+    { id: "dm0ndgjk9V4", title: "Britney Spears — Toxic" },
+    { id: "tR1ECf4sEpw", title: "Eminem — Lose Yourself" },
+    { id: "RqIRp4QE-1k", title: "OutKast — Hey Ya!" },
+    { id: "q7mlB-adMBc", title: "Coldplay — Yellow" },
+  ],
+  3: [
+    // 2020s — verified embeddable lyric uploads
+    { id: "XwxLwG2_Sxk", title: "The Weeknd — Blinding Lights" },
+    { id: "j2c3tR_qfiQ", title: "Dua Lipa — Levitating" },
+    { id: "_Bjf-iExroI", title: "Olivia Rodrigo — drivers license" },
+    { id: "Qfm6nfz1QNQ", title: "Harry Styles — As It Was" },
+  ],
 };
 
 const TRACK_PREVIEW_SECONDS = 30;
