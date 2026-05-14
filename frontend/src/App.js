@@ -166,52 +166,30 @@ const Home = () => {
     document.body.style.userSelect = "none";
   };
 
-  // Percentages relative to stage (2048 x 1152)
+  // Percentages relative to the active stage
   const pct = (n, base) => `${(n * 100) / base}%`;
 
-  if (isMobile) {
-    return (
-      <main
-        data-testid="home-page-mobile"
-        className="relative min-h-screen w-full bg-neutral-950 flex items-center justify-center overflow-hidden"
-      >
-        <div
-          data-testid="stage-mobile"
-          className="relative"
-          style={{
-            width: `min(100vw, calc(100vh * ${MOBILE_STAGE_W} / ${MOBILE_STAGE_H}))`,
-            aspectRatio: `${MOBILE_STAGE_W} / ${MOBILE_STAGE_H}`,
-            containerType: "inline-size",
-          }}
-        >
-          <img
-            src={MOBILE_BG_URL}
-            alt=""
-            draggable={false}
-            className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-          />
-        </div>
-      </main>
-    );
-  }
+  // Active stage dimensions (desktop vs mobile)
+  const stageW = isMobile ? MOBILE_STAGE_W : STAGE_W;
+  const stageH = isMobile ? MOBILE_STAGE_H : STAGE_H;
+  const bgUrl = isMobile ? MOBILE_BG_URL : BG_URL;
 
   return (
     <main
-      data-testid="home-page"
+      data-testid={isMobile ? "home-page-mobile" : "home-page"}
       className="relative min-h-screen w-full bg-neutral-950 flex items-center justify-center overflow-hidden"
     >
       <div
-        data-testid="stage"
+        data-testid={isMobile ? "stage-mobile" : "stage"}
         className="relative"
         style={{
-          // Stage always fits inside the viewport while keeping the bg aspect.
-          width: `min(100vw, calc(100vh * ${STAGE_W} / ${STAGE_H}))`,
-          aspectRatio: `${STAGE_W} / ${STAGE_H}`,
+          width: `min(100vw, calc(100vh * ${stageW} / ${stageH}))`,
+          aspectRatio: `${stageW} / ${stageH}`,
           containerType: "inline-size",
         }}
       >
         <img
-          src={BG_URL}
+          src={bgUrl}
           alt=""
           draggable={false}
           className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
@@ -222,10 +200,10 @@ const Home = () => {
           data-testid="hero-heading"
           className="absolute m-0 text-white select-none pointer-events-none"
           style={{
-            left: pct(337, STAGE_W),
-            top: pct(375, STAGE_H),
+            left: pct(337, stageW),
+            top: pct(375, stageH),
             fontFamily: '"Instrument Serif", serif',
-            fontSize: `${(110 / STAGE_W) * 100}cqw`,
+            fontSize: `${(110 / stageW) * 100}cqw`,
             lineHeight: 90 / 110,
             fontWeight: 400,
             textTransform: "lowercase",
@@ -244,10 +222,10 @@ const Home = () => {
           data-testid="hero-subtitle"
           className="absolute m-0 text-white select-none pointer-events-none"
           style={{
-            left: pct(337, STAGE_W),
-            top: pct(375 + 90 * 3 + 30, STAGE_H),
+            left: pct(337, stageW),
+            top: pct(375 + 90 * 3 + 30, stageH),
             fontFamily: '"Abyssinica SIL", serif',
-            fontSize: `${(26 / STAGE_W) * 100}cqw`,
+            fontSize: `${(26 / stageW) * 100}cqw`,
             lineHeight: "normal",
             fontWeight: 400,
           }}
@@ -261,10 +239,10 @@ const Home = () => {
           data-testid="slider-container"
           className="absolute"
           style={{
-            right: pct(276, STAGE_W),
-            bottom: pct(53, STAGE_H),
-            width: pct(231, STAGE_W),
-            height: pct(622, STAGE_H),
+            right: pct(276, stageW),
+            bottom: pct(53, stageH),
+            width: pct(231, stageW),
+            height: pct(622, stageH),
           }}
         >
           <div
@@ -276,8 +254,8 @@ const Home = () => {
               transform: "translateY(-50%)",
               width: pct(17, 231),
               height: pct(600, 622),
-              borderRadius: `${(4 / STAGE_W) * 100}cqw`,
-              border: `${(3 / STAGE_W) * 100}cqw solid #FFF`,
+              borderRadius: `${(4 / stageW) * 100}cqw`,
+              border: `${(3 / stageW) * 100}cqw solid #FFF`,
               boxSizing: "border-box",
             }}
           />
@@ -302,7 +280,7 @@ const Home = () => {
                     width: pct(63, 231),
                     height: pct(2, 622),
                     background: "#FFF",
-                    borderRadius: `${(4 / STAGE_W) * 100}cqw`,
+                    borderRadius: `${(4 / stageW) * 100}cqw`,
                   }}
                 />
                 <span
@@ -313,7 +291,7 @@ const Home = () => {
                     top: pct(y, 622),
                     transform: "translateY(-50%)",
                     fontFamily: '"Instrument Serif", serif',
-                    fontSize: `${(fontPx / STAGE_W) * 100}cqw`,
+                    fontSize: `${(fontPx / stageW) * 100}cqw`,
                     lineHeight: 1,
                     fontWeight: 400,
                     textTransform: "lowercase",
@@ -349,8 +327,8 @@ const Home = () => {
           className="absolute"
           style={{
             left: "50%",
-            bottom: pct(145, STAGE_H),
-            width: pct(460, STAGE_W),
+            bottom: pct(145, stageH),
+            width: pct(460, stageW),
             aspectRatio: "1 / 1",
             transform: "translateX(-50%)",
             perspective: "60vw",
@@ -381,9 +359,9 @@ const Home = () => {
           onMouseDown={onArmMouseDown}
           className="absolute select-none cursor-grab active:cursor-grabbing"
           style={{
-            left: `calc(50% + ${pct(238, STAGE_W)})`,
-            bottom: pct(139, STAGE_H),
-            width: pct(ARM_W, STAGE_W),
+            left: `calc(50% + ${pct(238, stageW)})`,
+            bottom: pct(139, stageH),
+            width: pct(ARM_W, stageW),
             aspectRatio: `${ARM_W} / ${ARM_H}`,
             transformOrigin: `50% ${ARM_PIVOT_RATIO * 100}%`,
             transform: `rotate(${armAngle}deg)`,
