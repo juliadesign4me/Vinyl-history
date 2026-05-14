@@ -125,7 +125,9 @@ const Home = () => {
             letterSpacing: 0,
           }}
         >
-          the time
+          the
+          <br />
+          time
           <br />
           <em style={{ fontStyle: "italic" }}>player</em>
         </h1>
