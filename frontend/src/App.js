@@ -132,6 +132,22 @@ const Home = () => {
           <em style={{ fontStyle: "italic" }}>player</em>
         </h1>
 
+        {/* Subtitle */}
+        <p
+          data-testid="hero-subtitle"
+          className="absolute m-0 text-white select-none pointer-events-none"
+          style={{
+            left: pct(337, STAGE_W),
+            top: pct(375 + 90 * 3 + 30, STAGE_H),
+            fontFamily: '"Abyssinica SIL", serif',
+            fontSize: `${(26 / STAGE_W) * 100}cqw`,
+            lineHeight: "normal",
+            fontWeight: 400,
+          }}
+        >
+          Travel through music history.
+        </p>
+
         {/* Vinyl disk */}
         <div
           className="absolute"
