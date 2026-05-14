@@ -151,7 +151,7 @@ const Home = () => {
         {/* Right-side slider container */}
         <div
           data-testid="slider-container"
-          className="absolute flex items-center justify-center"
+          className="absolute"
           style={{
             right: pct(276, STAGE_W),
             bottom: pct(53, STAGE_H),
@@ -161,7 +161,11 @@ const Home = () => {
         >
           <div
             data-testid="slider-track"
+            className="absolute"
             style={{
+              left: pct(17, 231),
+              top: "50%",
+              transform: "translateY(-50%)",
               width: pct(17, 231),
               height: pct(600, 622),
               borderRadius: `${(4 / STAGE_W) * 100}cqw`,
