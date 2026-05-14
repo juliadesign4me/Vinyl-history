@@ -95,11 +95,11 @@ const Home = () => {
       document.body.style.userSelect = "";
       if (armAngleRef.current >= 30) setIsSpinning(true);
     };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
     return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
     };
   }, []);
 
@@ -141,11 +141,11 @@ const Home = () => {
       thumbDragRef.current = null;
       document.body.style.userSelect = "";
     };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
     return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -191,6 +191,11 @@ const Home = () => {
       (Math.atan2(e.clientY - pivot.y, e.clientX - pivot.x) * 180) / Math.PI;
     dragRef.current = { pivot, startMouseAngle, startArmAngle: armAngle };
     document.body.style.userSelect = "none";
+    if (e.pointerId !== undefined && wrap.setPointerCapture) {
+      try {
+        wrap.setPointerCapture(e.pointerId);
+      } catch (_) {}
+    }
   };
 
   // Percentages relative to the active stage
@@ -376,7 +381,7 @@ const Home = () => {
               alt=""
               draggable={false}
               data-testid="slider-thumb"
-              onMouseDown={onThumbMouseDown}
+              onPointerDown={onThumbMouseDown}
               className="absolute select-none cursor-grab active:cursor-grabbing"
               style={{
                 left: MOBILE_SNAP_XS[pageIndex],
@@ -465,7 +470,7 @@ const Home = () => {
               alt=""
               draggable={false}
               data-testid="slider-thumb"
-              onMouseDown={onThumbMouseDown}
+              onPointerDown={onThumbMouseDown}
               className="absolute select-none cursor-grab active:cursor-grabbing"
               style={{
                 left: 0,
@@ -515,7 +520,7 @@ const Home = () => {
         <div
           ref={armWrapRef}
           data-testid="tonearm"
-          onMouseDown={onArmMouseDown}
+          onPointerDown={onArmMouseDown}
           className="absolute select-none cursor-grab active:cursor-grabbing"
           style={{
             left: isMobile
