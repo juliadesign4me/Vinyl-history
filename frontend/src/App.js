@@ -10,6 +10,9 @@ const MOBILE_BG_URL = "/assets/mobile-2020s.png";
 const TONEARM_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/3rh1ej02_2020%20torn.png";
 
+const TONEARM_2000S_URL =
+  "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/76s7ihf4_2000%20torn.png";
+
 // Desktop stage = container with the SAME aspect ratio as the bg image (2048 x 1152).
 const STAGE_W = 2048;
 const STAGE_H = 1152;
@@ -544,7 +547,7 @@ const Home = () => {
           }}
         >
           <img
-            src={TONEARM_URL}
+            src={pageIndex === 2 ? TONEARM_2000S_URL : TONEARM_URL}
             alt="tonearm"
             draggable={false}
             className="w-full h-full block pointer-events-none select-none"
