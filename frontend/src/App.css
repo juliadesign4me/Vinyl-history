@@ -64,6 +64,9 @@
         transform: rotate(360deg);
     }
 }
-#emergent-badge {
+#emergent-badge, a[href*="emergent.sh"] {
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
