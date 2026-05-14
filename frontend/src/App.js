@@ -220,16 +220,16 @@ const Home = () => {
               boxSizing: "border-box",
             }}
           />
-          {/* 4 tick marks, evenly spaced, 36px from each end of the track */}
+          {/* 4 tick marks aligned to the RIGHT edge of the track, 36px from each end */}
           {[47, 223, 399, 575].map((centerPx) => (
             <div
               key={centerPx}
               data-testid={`tick-${centerPx}`}
               className="absolute"
               style={{
-                left: pct(25.5, 231),
+                right: pct(231 - 34, 231),
                 top: pct(centerPx, 622),
-                transform: "translate(-50%, -50%)",
+                transform: "translateY(-50%)",
                 width: pct(63, 231),
                 height: pct(2, 622),
                 background: "#FFF",
