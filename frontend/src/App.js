@@ -518,7 +518,9 @@ const Home = () => {
           onMouseDown={onArmMouseDown}
           className="absolute select-none cursor-grab active:cursor-grabbing"
           style={{
-            left: `calc(50% + ${pct(238, stageW)})`,
+            left: isMobile
+              ? `calc(50% + ${pct(238, stageW)} + 3%)`
+              : `calc(50% + ${pct(238, stageW)})`,
             bottom: isMobile
               ? `calc(${pct(139, stageH)} + 30%)`
               : pct(139, stageH),
