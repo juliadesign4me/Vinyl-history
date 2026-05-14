@@ -556,10 +556,10 @@ const Home = () => {
           className="absolute select-none cursor-grab active:cursor-grabbing"
           style={{
             left: isMobile
-              ? `calc(50% + ${pct(238, stageW)} + 5%)`
+              ? `calc(50% + ${pct(238, stageW)} + 10%)`
               : `calc(50% + ${pct(238, stageW)})`,
             bottom: isMobile
-              ? `calc(${pct(139, stageH)} + 30%)`
+              ? `calc(${pct(139, stageH)} + 28%)`
               : pct(139, stageH),
             width: pct(ARM_W, stageW),
             aspectRatio: `${ARM_W} / ${ARM_H}`,
