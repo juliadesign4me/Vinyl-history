@@ -220,6 +220,23 @@ const Home = () => {
               boxSizing: "border-box",
             }}
           />
+          {/* 4 tick marks, evenly spaced, 36px from each end of the track */}
+          {[47, 223, 399, 575].map((centerPx) => (
+            <div
+              key={centerPx}
+              data-testid={`tick-${centerPx}`}
+              className="absolute"
+              style={{
+                left: pct(25.5, 231),
+                top: pct(centerPx, 622),
+                transform: "translate(-50%, -50%)",
+                width: pct(63, 231),
+                height: pct(2, 622),
+                background: "#FFF",
+                borderRadius: `${(4 / STAGE_W) * 100}cqw`,
+              }}
+            />
+          ))}
           <img
             src="/assets/slider-thumb.svg"
             alt=""
