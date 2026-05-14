@@ -125,7 +125,9 @@ const Home = () => {
             letterSpacing: 0,
           }}
         >
-          the time <em style={{ fontStyle: "italic" }}>player</em>
+          the time
+          <br />
+          <em style={{ fontStyle: "italic" }}>player</em>
         </h1>
 
         {/* Vinyl disk */}
