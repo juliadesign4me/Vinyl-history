@@ -9,6 +9,7 @@ const BG_2000S_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/7gaij5o4_2000s.png";
 
 const MOBILE_BG_URL = "/assets/mobile-2020s.png";
+const MOBILE_BG_2000S_URL = "/assets/mobile-2000s.png";
 
 const TONEARM_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/3rh1ej02_2020%20torn.png";
@@ -212,7 +213,9 @@ const Home = () => {
   const stageW = isMobile ? MOBILE_STAGE_W : STAGE_W;
   const stageH = isMobile ? MOBILE_STAGE_H : STAGE_H;
   const bgUrl = isMobile
-    ? MOBILE_BG_URL
+    ? pageIndex === 2
+      ? MOBILE_BG_2000S_URL
+      : MOBILE_BG_URL
     : pageIndex === 2
     ? BG_2000S_URL
     : BG_URL;
