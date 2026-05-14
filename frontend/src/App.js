@@ -520,7 +520,7 @@ const Home = () => {
           style={{
             left: `calc(50% + ${pct(238, stageW)})`,
             bottom: isMobile
-              ? `calc(${pct(139, stageH)} + 25%)`
+              ? `calc(${pct(139, stageH)} + 30%)`
               : pct(139, stageH),
             width: pct(ARM_W, stageW),
             aspectRatio: `${ARM_W} / ${ARM_H}`,
