@@ -27,6 +27,9 @@ const ARM_H = 455;
 const ARM_PIVOT_FROM_TOP = 25;
 const ARM_PIVOT_RATIO = ARM_PIVOT_FROM_TOP / ARM_H; // 0.0549
 
+// Mobile slider tick X positions (in container px). Track is 436 long, ticks 36 from each end.
+const MOBILE_SNAP_XS = [36, 36 + (436 - 72) / 3, 36 + (2 * (436 - 72)) / 3, 400];
+
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(
     typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT
@@ -100,24 +103,38 @@ const Home = () => {
     };
   }, []);
 
-  // Vertical drag for the slider thumb — snaps to the nearest tick position.
+  // Drag for the slider thumb — snaps to the nearest tick position.
+  // Supports both vertical (desktop) and horizontal (mobile) axes.
   useEffect(() => {
     const onMove = (e) => {
-      if (!thumbDragRef.current) return;
-      const { containerHeight, startMouseY, startThumbTopPx } =
-        thumbDragRef.current;
-      const nextPx = startThumbTopPx + (e.clientY - startMouseY);
-      const nextPct = (nextPx / containerHeight) * 100;
-      let bestIdx = 0;
-      let bestDist = Infinity;
-      SNAP_TOPS_PCT.forEach((p, i) => {
-        const d = Math.abs(p - nextPct);
-        if (d < bestDist) {
-          bestDist = d;
-          bestIdx = i;
-        }
-      });
-      setPageIndex(bestIdx);
+      const d = thumbDragRef.current;
+      if (!d) return;
+      if (d.isHorizontal) {
+        const nextPx = d.startThumbPx + (e.clientX - d.startMouse);
+        let bestIdx = 0;
+        let bestDist = Infinity;
+        d.snapPxs.forEach((s, i) => {
+          const dist = Math.abs(s - nextPx);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestIdx = i;
+          }
+        });
+        setPageIndex(bestIdx);
+      } else {
+        const nextPx = d.startThumbPx + (e.clientY - d.startMouse);
+        const nextPct = (nextPx / d.containerHeight) * 100;
+        let bestIdx = 0;
+        let bestDist = Infinity;
+        SNAP_TOPS_PCT.forEach((p, i) => {
+          const dist = Math.abs(p - nextPct);
+          if (dist < bestDist) {
+            bestDist = dist;
+            bestIdx = i;
+          }
+        });
+        setPageIndex(bestIdx);
+      }
     };
     const onUp = () => {
       if (!thumbDragRef.current) return;
@@ -139,11 +156,21 @@ const Home = () => {
     const container = sliderContainerRef.current;
     if (!container) return;
     const rect = container.getBoundingClientRect();
-    thumbDragRef.current = {
-      containerHeight: rect.height,
-      startMouseY: e.clientY,
-      startThumbTopPx: (thumbTopPct / 100) * rect.height,
-    };
+    if (isMobile) {
+      thumbDragRef.current = {
+        isHorizontal: true,
+        snapPxs: MOBILE_SNAP_XS,
+        startMouse: e.clientX,
+        startThumbPx: MOBILE_SNAP_XS[pageIndex],
+      };
+    } else {
+      thumbDragRef.current = {
+        isHorizontal: false,
+        containerHeight: rect.height,
+        startMouse: e.clientY,
+        startThumbPx: (thumbTopPct / 100) * rect.height,
+      };
+    }
     document.body.style.userSelect = "none";
   };
 
@@ -271,94 +298,186 @@ const Home = () => {
           Travel through music history.
         </p>
 
-        {/* Right-side slider container */}
-        <div
-          ref={sliderContainerRef}
-          data-testid="slider-container"
-          className="absolute"
-          style={{
-            right: pct(276, stageW),
-            bottom: pct(53, stageH),
-            width: pct(231, stageW),
-            height: pct(622, stageH),
-          }}
-        >
+        {/* Slider — vertical on desktop, horizontal on mobile */}
+        {isMobile ? (
           <div
-            data-testid="slider-track"
+            ref={sliderContainerRef}
+            data-testid="slider-container"
             className="absolute"
             style={{
-              left: pct(17, 231),
-              top: "50%",
-              transform: "translateY(-50%)",
-              width: pct(17, 231),
-              height: pct(600, 622),
-              borderRadius: `${(4 / stageW) * 100}cqw`,
-              border: `${(3 / stageW) * 100}cqw solid #FFF`,
-              boxSizing: "border-box",
+              left: "50%",
+              bottom: pct(110, stageH),
+              transform: "translateX(-50%)",
+              width: 436,
+              height: 11,
             }}
-          />
-          {/* 4 tick marks + decade labels anchored by their LEFT edge to the RIGHT edge of the track */}
-          {[
-            { y: 47, label: "1940s" },
-            { y: 223, label: "1970s" },
-            { y: 399, label: "2000s" },
-            { y: 575, label: "2020s" },
-          ].map(({ y, label }, idx) => {
-            const active = idx === pageIndex;
-            const fontPx = active ? 60 : 30;
-            return (
-              <div key={y}>
-                <div
-                  data-testid={`tick-${y}`}
-                  className="absolute"
-                  style={{
-                    left: pct(34, 231),
-                    top: pct(y, 622),
-                    transform: "translateY(-50%)",
-                    width: pct(63, 231),
-                    height: pct(2, 622),
-                    background: "#FFF",
-                    borderRadius: `${(4 / stageW) * 100}cqw`,
-                  }}
-                />
-                <span
-                  data-testid={`label-${label}`}
-                  className="absolute text-white select-none pointer-events-none"
-                  style={{
-                    left: pct(113, 231),
-                    top: pct(y, 622),
-                    transform: "translateY(-50%)",
-                    fontFamily: '"Instrument Serif", serif',
-                    fontSize: `${(fontPx / stageW) * 100}cqw`,
-                    lineHeight: 1,
-                    fontWeight: 400,
-                    textTransform: "lowercase",
-                    whiteSpace: "nowrap",
-                    transition: "font-size 200ms ease",
-                  }}
-                >
-                  {label}
-                </span>
-              </div>
-            );
-          })}
-          <img
-            src="/assets/slider-thumb.svg"
-            alt=""
-            draggable={false}
-            data-testid="slider-thumb"
-            onMouseDown={onThumbMouseDown}
-            className="absolute select-none cursor-grab active:cursor-grabbing"
+          >
+            {/* Track (horizontal) */}
+            <div
+              data-testid="slider-track"
+              className="absolute"
+              style={{
+                left: 0,
+                top: 0,
+                width: 436,
+                height: 11,
+                borderRadius: 4,
+                border: "2px solid #FFF",
+                boxSizing: "border-box",
+              }}
+            />
+            {/* 4 vertical ticks + decade labels below them */}
+            {[
+              { x: MOBILE_SNAP_XS[0], label: "1940s" },
+              { x: MOBILE_SNAP_XS[1], label: "1970s" },
+              { x: MOBILE_SNAP_XS[2], label: "2000s" },
+              { x: MOBILE_SNAP_XS[3], label: "2020s" },
+            ].map(({ x, label }, idx) => {
+              const active = idx === pageIndex;
+              const fontPx = active ? 30 : 20;
+              return (
+                <div key={idx}>
+                  <div
+                    data-testid={`tick-${idx}`}
+                    className="absolute"
+                    style={{
+                      left: x,
+                      top: 11,
+                      transform: "translateX(-50%)",
+                      width: 2,
+                      height: 36,
+                      background: "#FFF",
+                      borderRadius: 4,
+                    }}
+                  />
+                  <span
+                    data-testid={`label-${label}`}
+                    className="absolute text-white select-none pointer-events-none"
+                    style={{
+                      left: x,
+                      top: 11 + 36 + 4,
+                      transform: "translateX(-50%)",
+                      fontFamily: '"Instrument Serif", serif',
+                      fontSize: `${fontPx}px`,
+                      lineHeight: 1,
+                      fontWeight: 400,
+                      textTransform: "lowercase",
+                      whiteSpace: "nowrap",
+                      transition: "font-size 200ms ease",
+                    }}
+                  >
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
+            <img
+              src="/assets/slider-thumb.svg"
+              alt=""
+              draggable={false}
+              data-testid="slider-thumb"
+              onMouseDown={onThumbMouseDown}
+              className="absolute select-none cursor-grab active:cursor-grabbing"
+              style={{
+                left: MOBILE_SNAP_XS[pageIndex],
+                top: -(44 - 11) / 2,
+                transform: "translateX(-50%)",
+                width: 34,
+                height: 44,
+                touchAction: "none",
+                transition: "left 150ms ease-out",
+              }}
+            />
+          </div>
+        ) : (
+          <div
+            ref={sliderContainerRef}
+            data-testid="slider-container"
+            className="absolute"
             style={{
-              left: 0,
-              top: `${thumbTopPct}%`,
-              width: pct(51, 231),
-              aspectRatio: "51 / 64",
-              touchAction: "none",
-              transition: "top 150ms ease-out",
+              right: pct(276, stageW),
+              bottom: pct(53, stageH),
+              width: pct(231, stageW),
+              height: pct(622, stageH),
             }}
-          />
-        </div>
+          >
+            <div
+              data-testid="slider-track"
+              className="absolute"
+              style={{
+                left: pct(17, 231),
+                top: "50%",
+                transform: "translateY(-50%)",
+                width: pct(17, 231),
+                height: pct(600, 622),
+                borderRadius: `${(4 / stageW) * 100}cqw`,
+                border: `${(3 / stageW) * 100}cqw solid #FFF`,
+                boxSizing: "border-box",
+              }}
+            />
+            {/* 4 tick marks + decade labels anchored by their LEFT edge to the RIGHT edge of the track */}
+            {[
+              { y: 47, label: "1940s" },
+              { y: 223, label: "1970s" },
+              { y: 399, label: "2000s" },
+              { y: 575, label: "2020s" },
+            ].map(({ y, label }, idx) => {
+              const active = idx === pageIndex;
+              const fontPx = active ? 60 : 30;
+              return (
+                <div key={y}>
+                  <div
+                    data-testid={`tick-${y}`}
+                    className="absolute"
+                    style={{
+                      left: pct(34, 231),
+                      top: pct(y, 622),
+                      transform: "translateY(-50%)",
+                      width: pct(63, 231),
+                      height: pct(2, 622),
+                      background: "#FFF",
+                      borderRadius: `${(4 / stageW) * 100}cqw`,
+                    }}
+                  />
+                  <span
+                    data-testid={`label-${label}`}
+                    className="absolute text-white select-none pointer-events-none"
+                    style={{
+                      left: pct(113, 231),
+                      top: pct(y, 622),
+                      transform: "translateY(-50%)",
+                      fontFamily: '"Instrument Serif", serif',
+                      fontSize: `${(fontPx / stageW) * 100}cqw`,
+                      lineHeight: 1,
+                      fontWeight: 400,
+                      textTransform: "lowercase",
+                      whiteSpace: "nowrap",
+                      transition: "font-size 200ms ease",
+                    }}
+                  >
+                    {label}
+                  </span>
+                </div>
+              );
+            })}
+            <img
+              src="/assets/slider-thumb.svg"
+              alt=""
+              draggable={false}
+              data-testid="slider-thumb"
+              onMouseDown={onThumbMouseDown}
+              className="absolute select-none cursor-grab active:cursor-grabbing"
+              style={{
+                left: 0,
+                top: `${thumbTopPct}%`,
+                width: pct(51, 231),
+                aspectRatio: "51 / 64",
+                touchAction: "none",
+                transition: "top 150ms ease-out",
+              }}
+            />
+          </div>
+        )}
 
         {/* Vinyl disk */}
         <div
