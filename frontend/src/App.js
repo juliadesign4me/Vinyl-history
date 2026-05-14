@@ -528,6 +528,8 @@ const Home = () => {
               src={
                 pageIndex === 2
                   ? "/assets/vinyl-disk-2000s.png"
+                  : pageIndex === 1
+                  ? "/assets/vinyl-disk-1970s.png"
                   : "/assets/vinyl-disk.png"
               }
               alt="vinyl disk"
