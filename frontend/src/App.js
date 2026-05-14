@@ -234,22 +234,45 @@ const Home = () => {
               boxSizing: "border-box",
             }}
           />
-          {/* 4 tick marks anchored by their LEFT edge to the RIGHT edge of the track */}
-          {[47, 223, 399, 575].map((centerPx) => (
-            <div
-              key={centerPx}
-              data-testid={`tick-${centerPx}`}
-              className="absolute"
-              style={{
-                left: pct(34, 231),
-                top: pct(centerPx, 622),
-                transform: "translateY(-50%)",
-                width: pct(63, 231),
-                height: pct(2, 622),
-                background: "#FFF",
-                borderRadius: `${(4 / STAGE_W) * 100}cqw`,
-              }}
-            />
+          {/* 4 tick marks + decade labels anchored by their LEFT edge to the RIGHT edge of the track */}
+          {[
+            { y: 47, label: "1940s" },
+            { y: 223, label: "1970s" },
+            { y: 399, label: "2000s" },
+            { y: 575, label: "2020s" },
+          ].map(({ y, label }) => (
+            <div key={y}>
+              <div
+                data-testid={`tick-${y}`}
+                className="absolute"
+                style={{
+                  left: pct(34, 231),
+                  top: pct(y, 622),
+                  transform: "translateY(-50%)",
+                  width: pct(63, 231),
+                  height: pct(2, 622),
+                  background: "#FFF",
+                  borderRadius: `${(4 / STAGE_W) * 100}cqw`,
+                }}
+              />
+              <span
+                data-testid={`label-${label}`}
+                className="absolute text-white select-none pointer-events-none"
+                style={{
+                  left: pct(97, 231),
+                  top: pct(y, 622),
+                  transform: "translateY(-50%)",
+                  fontFamily: '"Instrument Serif", serif',
+                  fontSize: `${(30 / STAGE_W) * 100}cqw`,
+                  lineHeight: 1,
+                  fontWeight: 400,
+                  textTransform: "lowercase",
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {label}
+              </span>
+            </div>
           ))}
           <img
             src="/assets/slider-thumb.svg"
