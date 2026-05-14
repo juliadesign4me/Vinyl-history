@@ -110,7 +110,7 @@ const Home = () => {
       const d = thumbDragRef.current;
       if (!d) return;
       if (d.isHorizontal) {
-        const nextPx = d.startThumbPx + (e.clientX - d.startMouse);
+        const nextPx = d.startThumbPx + (e.clientX - d.startMouse) / d.scale;
         let bestIdx = 0;
         let bestDist = Infinity;
         d.snapPxs.forEach((s, i) => {
@@ -162,6 +162,7 @@ const Home = () => {
         snapPxs: MOBILE_SNAP_XS,
         startMouse: e.clientX,
         startThumbPx: MOBILE_SNAP_XS[pageIndex],
+        scale: 0.9,
       };
     } else {
       thumbDragRef.current = {
@@ -312,7 +313,8 @@ const Home = () => {
             style={{
               left: "50%",
               bottom: `calc(${pct(20, stageH)} + 20%)`,
-              transform: "translateX(-50%)",
+              transform: "translateX(-50%) scale(0.9)",
+              transformOrigin: "center center",
               width: 400,
               height: 11,
             }}
