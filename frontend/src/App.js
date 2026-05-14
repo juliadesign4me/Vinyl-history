@@ -148,6 +148,29 @@ const Home = () => {
           Travel through music history.
         </p>
 
+        {/* Right-side slider container */}
+        <div
+          data-testid="slider-container"
+          className="absolute flex items-center justify-center"
+          style={{
+            right: pct(276, STAGE_W),
+            bottom: pct(53, STAGE_H),
+            width: pct(231, STAGE_W),
+            height: pct(622, STAGE_H),
+          }}
+        >
+          <div
+            data-testid="slider-track"
+            style={{
+              width: pct(17, 231),
+              height: pct(600, 622),
+              borderRadius: `${(4 / STAGE_W) * 100}cqw`,
+              border: `${(3 / STAGE_W) * 100}cqw solid #FFF`,
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+
         {/* Vinyl disk */}
         <div
           className="absolute"
