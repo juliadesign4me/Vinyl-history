@@ -64,3 +64,6 @@
         transform: rotate(360deg);
     }
 }
+#emergent-badge {
+  display: none !important;
+}
