@@ -12,7 +12,7 @@ const BG_1970S_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/c579ahtz_1970s.png";
 
 const BG_1940S_URL =
-  "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/ezqvp3jr_1940s.png";
+  "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/iasbnh4x_1940s.png";
 
 const MOBILE_BG_URL = "/assets/mobile-2020s.png";
 const MOBILE_BG_2000S_URL = "/assets/mobile-2000s.png";
