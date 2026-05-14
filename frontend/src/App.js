@@ -208,7 +208,7 @@ const Home = () => {
                   width: "100%",
                   textAlign: "center",
                   fontFamily: '"Instrument Serif", serif',
-                  fontSize: `${(64 / stageW) * 100}cqw`,
+                  fontSize: "64px",
                   lineHeight: 1,
                   fontWeight: 400,
                   textTransform: "lowercase",
@@ -254,7 +254,7 @@ const Home = () => {
                   width: "100%",
                   textAlign: "center",
                   fontFamily: '"Abyssinica SIL", serif',
-                  fontSize: `${(18 / stageW) * 100}cqw`,
+                  fontSize: "18px",
                   lineHeight: "normal",
                   fontWeight: 400,
                 }
