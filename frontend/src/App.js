@@ -250,7 +250,7 @@ const Home = () => {
               ? {
                   left: 0,
                   right: 0,
-                  top: pct(60 + 64 + 16, stageH),
+                  top: pct(60 + 64 + 24, stageH),
                   width: "100%",
                   textAlign: "center",
                   fontFamily: '"Abyssinica SIL", serif',
