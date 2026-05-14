@@ -29,10 +29,17 @@ const Home = () => {
   const thumbDragRef = useRef(null);
   const [armAngle, setArmAngle] = useState(0); // 0 = rest, +90 = full CW
   const [isSpinning, setIsSpinning] = useState(false);
-  // Thumb top within the slider container, in % (0 = top, max = bottom)
-  const [thumbTopPct, setThumbTopPct] = useState(
-    ((622 - 64) / 2 / 622) * 100
-  );
+  // Thumb position is locked to one of 4 tick centers. Each tick = a page.
+  // Tick centers in container-px: 47, 223, 399, 575. Thumb height = 64, so thumb-top
+  // (in container-px) for centered alignment is tick_center - 32 = 15, 191, 367, 543.
+  const SNAP_TOPS_PCT = [
+    (15 / 622) * 100,
+    (191 / 622) * 100,
+    (367 / 622) * 100,
+    (543 / 622) * 100,
+  ];
+  const [pageIndex, setPageIndex] = useState(0);
+  const thumbTopPct = SNAP_TOPS_PCT[pageIndex];
 
   useEffect(() => {
     armAngleRef.current = armAngle;
@@ -72,16 +79,24 @@ const Home = () => {
     };
   }, []);
 
-  // Vertical drag for the slider thumb (constrained inside the slider container)
+  // Vertical drag for the slider thumb — snaps to the nearest tick position.
   useEffect(() => {
     const onMove = (e) => {
       if (!thumbDragRef.current) return;
-      const { containerHeight, thumbH, startMouseY, startThumbTopPx } =
+      const { containerHeight, startMouseY, startThumbTopPx } =
         thumbDragRef.current;
-      let next = startThumbTopPx + (e.clientY - startMouseY);
-      if (next < 0) next = 0;
-      if (next > containerHeight - thumbH) next = containerHeight - thumbH;
-      setThumbTopPct((next / containerHeight) * 100);
+      const nextPx = startThumbTopPx + (e.clientY - startMouseY);
+      const nextPct = (nextPx / containerHeight) * 100;
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      SNAP_TOPS_PCT.forEach((p, i) => {
+        const d = Math.abs(p - nextPct);
+        if (d < bestDist) {
+          bestDist = d;
+          bestIdx = i;
+        }
+      });
+      setPageIndex(bestIdx);
     };
     const onUp = () => {
       if (!thumbDragRef.current) return;
@@ -94,6 +109,7 @@ const Home = () => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onThumbMouseDown = (e) => {
@@ -102,10 +118,8 @@ const Home = () => {
     const container = sliderContainerRef.current;
     if (!container) return;
     const rect = container.getBoundingClientRect();
-    const thumbH = (64 / 622) * rect.height;
     thumbDragRef.current = {
       containerHeight: rect.height,
-      thumbH,
       startMouseY: e.clientY,
       startThumbTopPx: (thumbTopPct / 100) * rect.height,
     };
@@ -250,6 +264,7 @@ const Home = () => {
               width: pct(51, 231),
               aspectRatio: "51 / 64",
               touchAction: "none",
+              transition: "top 150ms ease-out",
             }}
           />
         </div>
