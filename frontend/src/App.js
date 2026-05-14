@@ -8,12 +8,24 @@ const BG_URL =
 const TONEARM_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/3rh1ej02_2020%20torn.png";
 
+// Stage = container with the SAME aspect ratio as the bg image (2048 x 1152).
+// All children are positioned in % of the stage so they always stay aligned to
+// the artwork beneath them, regardless of viewport size.
+const STAGE_W = 2048;
+const STAGE_H = 1152;
+
+// Tonearm geometry (in stage-pixel reference frame)
+const ARM_W = 128;
+const ARM_H = 455;
+const ARM_PIVOT_FROM_TOP = 25;
+const ARM_PIVOT_RATIO = ARM_PIVOT_FROM_TOP / ARM_H; // 0.0549
+
 const Home = () => {
   const diskRef = useRef(null);
   const armWrapRef = useRef(null);
   const dragRef = useRef(null);
   const armAngleRef = useRef(0);
-  const [armAngle, setArmAngle] = useState(0); // 0deg = rest, +90deg = full CW (drag right)
+  const [armAngle, setArmAngle] = useState(0); // 0 = rest, +90 = full CW
   const [isSpinning, setIsSpinning] = useState(false);
 
   useEffect(() => {
@@ -28,7 +40,6 @@ const Home = () => {
     el.style.animation = "vinyl-flip 1.5s cubic-bezier(0.4,0,0.2,1) forwards";
   };
 
-  // Drag-to-rotate tonearm around its top pivot, clamped to [-90deg, 0deg]
   useEffect(() => {
     const toDeg = (rad) => (rad * 180) / Math.PI;
 
@@ -45,7 +56,6 @@ const Home = () => {
       if (!dragRef.current) return;
       dragRef.current = null;
       document.body.style.userSelect = "";
-      // If the tonearm has moved enough to "land on the disk", spin it
       if (armAngleRef.current >= 30) setIsSpinning(true);
     };
     window.addEventListener("mousemove", onMove);
@@ -59,16 +69,15 @@ const Home = () => {
   const onArmMouseDown = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // Lifting the tonearm pauses the disk
     setIsSpinning(false);
     const wrap = armWrapRef.current;
     if (!wrap) return;
-    // Compute pivot from layout (not bounding rect) so it doesn't drift while rotated
+    // Pivot derived from the rendered element so it scales with the stage
     const parent = wrap.offsetParent || document.body;
     const parentRect = parent.getBoundingClientRect();
     const pivot = {
       x: parentRect.left + wrap.offsetLeft + wrap.offsetWidth / 2,
-      y: parentRect.top + wrap.offsetTop + 25,
+      y: parentRect.top + wrap.offsetTop + wrap.offsetHeight * ARM_PIVOT_RATIO,
     };
     const startMouseAngle =
       (Math.atan2(e.clientY - pivot.y, e.clientX - pivot.x) * 180) / Math.PI;
@@ -76,61 +85,84 @@ const Home = () => {
     document.body.style.userSelect = "none";
   };
 
+  // Percentages relative to stage (2048 x 1152)
+  const pct = (n, base) => `${(n * 100) / base}%`;
+
   return (
     <main
       data-testid="home-page"
-      className="relative min-h-screen w-full bg-neutral-950 bg-no-repeat bg-center bg-contain overflow-hidden"
-      style={{ backgroundImage: `url(${BG_URL})` }}
+      className="relative min-h-screen w-full bg-neutral-950 flex items-center justify-center overflow-hidden"
     >
       <div
-        className="absolute left-1/2"
+        data-testid="stage"
+        className="relative"
         style={{
-          width: 460,
-          height: 460,
-          marginLeft: -230,
-          bottom: 145,
-          perspective: 900,
-        }}
-      >
-        <div
-          ref={diskRef}
-          data-testid="vinyl-disk"
-          onClick={replay}
-          className="vinyl-disk cursor-pointer"
-          style={{ width: 460, height: 460 }}
-        >
-          <img
-            src="/assets/vinyl-disk.png"
-            alt="vinyl disk"
-            className="w-full h-full block select-none vinyl-spin"
-            style={{ animationPlayState: isSpinning ? "running" : "paused" }}
-            draggable={false}
-          />
-        </div>
-      </div>
-
-      <div
-        ref={armWrapRef}
-        data-testid="tonearm"
-        onMouseDown={onArmMouseDown}
-        className="absolute select-none cursor-grab active:cursor-grabbing"
-        style={{
-          width: 128,
-          height: 455,
-          left: "calc(50% + 238px)",
-          bottom: 139,
-          transformOrigin: "50% 25px",
-          transform: `rotate(${armAngle}deg)`,
-          willChange: "transform",
-          touchAction: "none",
+          // Stage always fits inside the viewport while keeping the bg aspect.
+          width: `min(100vw, calc(100vh * ${STAGE_W} / ${STAGE_H}))`,
+          aspectRatio: `${STAGE_W} / ${STAGE_H}`,
         }}
       >
         <img
-          src={TONEARM_URL}
-          alt="tonearm"
+          src={BG_URL}
+          alt=""
           draggable={false}
-          className="w-full h-full block pointer-events-none select-none"
+          className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
         />
+
+        {/* Vinyl disk */}
+        <div
+          className="absolute"
+          style={{
+            left: "50%",
+            bottom: pct(145, STAGE_H),
+            width: pct(460, STAGE_W),
+            aspectRatio: "1 / 1",
+            transform: "translateX(-50%)",
+            perspective: "60vw",
+          }}
+        >
+          <div
+            ref={diskRef}
+            data-testid="vinyl-disk"
+            onClick={replay}
+            className="vinyl-disk cursor-pointer w-full h-full"
+          >
+            <img
+              src="/assets/vinyl-disk.png"
+              alt="vinyl disk"
+              className="w-full h-full block select-none vinyl-spin"
+              style={{
+                animationPlayState: isSpinning ? "running" : "paused",
+              }}
+              draggable={false}
+            />
+          </div>
+        </div>
+
+        {/* Tonearm */}
+        <div
+          ref={armWrapRef}
+          data-testid="tonearm"
+          onMouseDown={onArmMouseDown}
+          className="absolute select-none cursor-grab active:cursor-grabbing"
+          style={{
+            left: `calc(50% + ${pct(238, STAGE_W)})`,
+            bottom: pct(139, STAGE_H),
+            width: pct(ARM_W, STAGE_W),
+            aspectRatio: `${ARM_W} / ${ARM_H}`,
+            transformOrigin: `50% ${ARM_PIVOT_RATIO * 100}%`,
+            transform: `rotate(${armAngle}deg)`,
+            willChange: "transform",
+            touchAction: "none",
+          }}
+        >
+          <img
+            src={TONEARM_URL}
+            alt="tonearm"
+            draggable={false}
+            className="w-full h-full block pointer-events-none select-none"
+          />
+        </div>
       </div>
     </main>
   );
