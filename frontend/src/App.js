@@ -5,22 +5,43 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 const BG_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/kswe8qjc_2026new.png";
 
+const MOBILE_BG_URL = "/assets/mobile-2020s.png";
+
 const TONEARM_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/3rh1ej02_2020%20torn.png";
 
-// Stage = container with the SAME aspect ratio as the bg image (2048 x 1152).
-// All children are positioned in % of the stage so they always stay aligned to
-// the artwork beneath them, regardless of viewport size.
+// Desktop stage = container with the SAME aspect ratio as the bg image (2048 x 1152).
 const STAGE_W = 2048;
 const STAGE_H = 1152;
 
-// Tonearm geometry (in stage-pixel reference frame)
+// Mobile stage matches the mobile bg artwork (880 x 1912 ≈ iPhone 16/17 Pro Max).
+const MOBILE_STAGE_W = 880;
+const MOBILE_STAGE_H = 1912;
+
+// Mobile/desktop breakpoint (portrait phone vs everything else)
+const MOBILE_BREAKPOINT = 768;
+
+// Tonearm geometry (desktop frame)
 const ARM_W = 128;
 const ARM_H = 455;
 const ARM_PIVOT_FROM_TOP = 25;
 const ARM_PIVOT_RATIO = ARM_PIVOT_FROM_TOP / ARM_H; // 0.0549
 
+const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" && window.innerWidth < MOBILE_BREAKPOINT
+  );
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const onChange = (e) => setIsMobile(e.matches);
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
+  return isMobile;
+};
+
 const Home = () => {
+  const isMobile = useIsMobile();
   const diskRef = useRef(null);
   const armWrapRef = useRef(null);
   const dragRef = useRef(null);
@@ -147,6 +168,32 @@ const Home = () => {
 
   // Percentages relative to stage (2048 x 1152)
   const pct = (n, base) => `${(n * 100) / base}%`;
+
+  if (isMobile) {
+    return (
+      <main
+        data-testid="home-page-mobile"
+        className="relative min-h-screen w-full bg-neutral-950 flex items-center justify-center overflow-hidden"
+      >
+        <div
+          data-testid="stage-mobile"
+          className="relative"
+          style={{
+            width: `min(100vw, calc(100vh * ${MOBILE_STAGE_W} / ${MOBILE_STAGE_H}))`,
+            aspectRatio: `${MOBILE_STAGE_W} / ${MOBILE_STAGE_H}`,
+            containerType: "inline-size",
+          }}
+        >
+          <img
+            src={MOBILE_BG_URL}
+            alt=""
+            draggable={false}
+            className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+          />
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main
