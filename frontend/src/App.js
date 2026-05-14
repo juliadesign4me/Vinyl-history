@@ -8,6 +8,9 @@ const BG_URL =
 const BG_2000S_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/7gaij5o4_2000s.png";
 
+const BG_1970S_URL =
+  "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/c579ahtz_1970s.png";
+
 const MOBILE_BG_URL = "/assets/mobile-2020s.png";
 const MOBILE_BG_2000S_URL = "/assets/mobile-2000s.png";
 
@@ -218,6 +221,8 @@ const Home = () => {
       : MOBILE_BG_URL
     : pageIndex === 2
     ? BG_2000S_URL
+    : pageIndex === 1
+    ? BG_1970S_URL
     : BG_URL;
 
   return (
