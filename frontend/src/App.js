@@ -100,6 +100,7 @@ const Home = () => {
           // Stage always fits inside the viewport while keeping the bg aspect.
           width: `min(100vw, calc(100vh * ${STAGE_W} / ${STAGE_H}))`,
           aspectRatio: `${STAGE_W} / ${STAGE_H}`,
+          containerType: "inline-size",
         }}
       >
         <img
@@ -108,6 +109,24 @@ const Home = () => {
           draggable={false}
           className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
         />
+
+        {/* Heading */}
+        <h1
+          data-testid="hero-heading"
+          className="absolute m-0 text-white select-none pointer-events-none"
+          style={{
+            left: pct(337, STAGE_W),
+            top: pct(375, STAGE_H),
+            fontFamily: '"Instrument Serif", serif',
+            fontSize: `${(110 / STAGE_W) * 100}cqw`,
+            lineHeight: 90 / 110,
+            fontWeight: 400,
+            textTransform: "lowercase",
+            letterSpacing: 0,
+          }}
+        >
+          the time <em style={{ fontStyle: "italic" }}>player</em>
+        </h1>
 
         {/* Vinyl disk */}
         <div
