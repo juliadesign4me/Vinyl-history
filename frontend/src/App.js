@@ -17,6 +17,7 @@ const BG_1940S_URL =
 const MOBILE_BG_URL = "/assets/mobile-2020s.png";
 const MOBILE_BG_2000S_URL = "/assets/mobile-2000s.png";
 const MOBILE_BG_1970S_URL = "/assets/mobile-1970s.png";
+const MOBILE_BG_1940S_URL = "/assets/mobile-1940s.png";
 
 const TONEARM_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/3rh1ej02_2020%20torn.png";
@@ -230,6 +231,8 @@ const Home = () => {
       ? MOBILE_BG_2000S_URL
       : pageIndex === 1
       ? MOBILE_BG_1970S_URL
+      : pageIndex === 0
+      ? MOBILE_BG_1940S_URL
       : MOBILE_BG_URL
     : pageIndex === 2
     ? BG_2000S_URL
