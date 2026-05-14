@@ -27,8 +27,8 @@ const ARM_H = 455;
 const ARM_PIVOT_FROM_TOP = 25;
 const ARM_PIVOT_RATIO = ARM_PIVOT_FROM_TOP / ARM_H; // 0.0549
 
-// Mobile slider tick X positions (in container px). Track is 436 long, ticks 36 from each end.
-const MOBILE_SNAP_XS = [36, 36 + (436 - 72) / 3, 36 + (2 * (436 - 72)) / 3, 400];
+// Mobile slider tick X positions (in container px). Track is 400 long, ticks 36 from each end.
+const MOBILE_SNAP_XS = [36, 36 + (400 - 72) / 3, 36 + (2 * (400 - 72)) / 3, 364];
 
 const useIsMobile = () => {
   const [isMobile, setIsMobile] = useState(
@@ -308,7 +308,7 @@ const Home = () => {
               left: "50%",
               bottom: pct(110, stageH),
               transform: "translateX(-50%)",
-              width: 436,
+              width: 400,
               height: 11,
             }}
           >
@@ -319,7 +319,7 @@ const Home = () => {
               style={{
                 left: 0,
                 top: 0,
-                width: 436,
+                width: 400,
                 height: 11,
                 borderRadius: 4,
                 border: "2px solid #FFF",
