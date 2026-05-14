@@ -25,8 +25,14 @@ const Home = () => {
   const armWrapRef = useRef(null);
   const dragRef = useRef(null);
   const armAngleRef = useRef(0);
+  const sliderContainerRef = useRef(null);
+  const thumbDragRef = useRef(null);
   const [armAngle, setArmAngle] = useState(0); // 0 = rest, +90 = full CW
   const [isSpinning, setIsSpinning] = useState(false);
+  // Thumb top within the slider container, in % (0 = top, max = bottom)
+  const [thumbTopPct, setThumbTopPct] = useState(
+    ((622 - 64) / 2 / 622) * 100
+  );
 
   useEffect(() => {
     armAngleRef.current = armAngle;
@@ -65,6 +71,46 @@ const Home = () => {
       window.removeEventListener("mouseup", onUp);
     };
   }, []);
+
+  // Vertical drag for the slider thumb (constrained inside the slider container)
+  useEffect(() => {
+    const onMove = (e) => {
+      if (!thumbDragRef.current) return;
+      const { containerHeight, thumbH, startMouseY, startThumbTopPx } =
+        thumbDragRef.current;
+      let next = startThumbTopPx + (e.clientY - startMouseY);
+      if (next < 0) next = 0;
+      if (next > containerHeight - thumbH) next = containerHeight - thumbH;
+      setThumbTopPct((next / containerHeight) * 100);
+    };
+    const onUp = () => {
+      if (!thumbDragRef.current) return;
+      thumbDragRef.current = null;
+      document.body.style.userSelect = "";
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+    return () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+  }, []);
+
+  const onThumbMouseDown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const container = sliderContainerRef.current;
+    if (!container) return;
+    const rect = container.getBoundingClientRect();
+    const thumbH = (64 / 622) * rect.height;
+    thumbDragRef.current = {
+      containerHeight: rect.height,
+      thumbH,
+      startMouseY: e.clientY,
+      startThumbTopPx: (thumbTopPct / 100) * rect.height,
+    };
+    document.body.style.userSelect = "none";
+  };
 
   const onArmMouseDown = (e) => {
     e.preventDefault();
@@ -150,6 +196,7 @@ const Home = () => {
 
         {/* Right-side slider container */}
         <div
+          ref={sliderContainerRef}
           data-testid="slider-container"
           className="absolute"
           style={{
@@ -171,6 +218,21 @@ const Home = () => {
               borderRadius: `${(4 / STAGE_W) * 100}cqw`,
               border: `${(3 / STAGE_W) * 100}cqw solid #FFF`,
               boxSizing: "border-box",
+            }}
+          />
+          <img
+            src="/assets/slider-thumb.svg"
+            alt=""
+            draggable={false}
+            data-testid="slider-thumb"
+            onMouseDown={onThumbMouseDown}
+            className="absolute select-none cursor-grab active:cursor-grabbing"
+            style={{
+              left: 0,
+              top: `${thumbTopPct}%`,
+              width: pct(51, 231),
+              aspectRatio: "51 / 64",
+              touchAction: "none",
             }}
           />
         </div>
