@@ -38,7 +38,7 @@ const Home = () => {
     (367 / 622) * 100,
     (543 / 622) * 100,
   ];
-  const [pageIndex, setPageIndex] = useState(0);
+  const [pageIndex, setPageIndex] = useState(3); // 0=1940s, 1=1970s, 2=2000s, 3=2020s (current)
   const thumbTopPct = SNAP_TOPS_PCT[pageIndex];
 
   useEffect(() => {
