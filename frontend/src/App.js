@@ -519,7 +519,9 @@ const Home = () => {
           className="absolute select-none cursor-grab active:cursor-grabbing"
           style={{
             left: `calc(50% + ${pct(238, stageW)})`,
-            bottom: pct(139, stageH),
+            bottom: isMobile
+              ? `calc(${pct(139, stageH)} + 15%)`
+              : pct(139, stageH),
             width: pct(ARM_W, stageW),
             aspectRatio: `${ARM_W} / ${ARM_H}`,
             transformOrigin: `50% ${ARM_PIVOT_RATIO * 100}%`,
