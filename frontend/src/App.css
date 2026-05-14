@@ -37,7 +37,7 @@
     transform: rotateX(90deg);
     transform-origin: center center;
     will-change: transform;
-    animation: vinyl-flip 1.5s 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    animation: vinyl-flip 1.5s 2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
 @keyframes vinyl-rotate {

@@ -90,6 +90,22 @@ const Home = () => {
     armAngleRef.current = armAngle;
   }, [armAngle]);
 
+  // When user switches era, replay the flip-in for the new disk (with 2s pause).
+  const firstRenderRef = useRef(true);
+  useEffect(() => {
+    if (firstRenderRef.current) {
+      firstRenderRef.current = false;
+      return; // CSS animation already runs once on initial mount
+    }
+    const el = diskRef.current;
+    if (!el) return;
+    setIsSpinning(false);
+    el.style.animation = "none";
+    void el.offsetHeight;
+    el.style.animation =
+      "vinyl-flip 1.5s 2s cubic-bezier(0.4, 0, 0.2, 1) forwards";
+  }, [pageIndex]);
+
   const replay = () => {
     const el = diskRef.current;
     if (!el) return;
