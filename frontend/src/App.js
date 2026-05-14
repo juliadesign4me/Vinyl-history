@@ -541,6 +541,8 @@ const Home = () => {
                   ? "/assets/vinyl-disk-2000s.png"
                   : pageIndex === 1
                   ? "/assets/vinyl-disk-1970s.png"
+                  : pageIndex === 0
+                  ? "/assets/vinyl-disk-1940s.png"
                   : "/assets/vinyl-disk.png"
               }
               alt="vinyl disk"
