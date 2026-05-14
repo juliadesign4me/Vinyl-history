@@ -484,7 +484,7 @@ const Home = () => {
           className="absolute"
           style={{
             left: "50%",
-            bottom: pct(145, stageH),
+            bottom: pct(isMobile ? 145 + 175 : 145, stageH),
             width: isMobile ? 270 : pct(460, stageW),
             aspectRatio: "1 / 1",
             transform: "translateX(-50%)",
