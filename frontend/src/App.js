@@ -11,6 +11,9 @@ const BG_2000S_URL =
 const BG_1970S_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/c579ahtz_1970s.png";
 
+const BG_1940S_URL =
+  "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/ezqvp3jr_1940s.png";
+
 const MOBILE_BG_URL = "/assets/mobile-2020s.png";
 const MOBILE_BG_2000S_URL = "/assets/mobile-2000s.png";
 const MOBILE_BG_1970S_URL = "/assets/mobile-1970s.png";
@@ -229,6 +232,8 @@ const Home = () => {
     ? BG_2000S_URL
     : pageIndex === 1
     ? BG_1970S_URL
+    : pageIndex === 0
+    ? BG_1940S_URL
     : BG_URL;
 
   return (
