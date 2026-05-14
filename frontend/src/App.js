@@ -5,6 +5,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 const BG_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/kswe8qjc_2026new.png";
 
+const BG_2000S_URL =
+  "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/7gaij5o4_2000s.png";
+
 const MOBILE_BG_URL = "/assets/mobile-2020s.png";
 
 const TONEARM_URL =
@@ -208,7 +211,11 @@ const Home = () => {
   // Active stage dimensions (desktop vs mobile)
   const stageW = isMobile ? MOBILE_STAGE_W : STAGE_W;
   const stageH = isMobile ? MOBILE_STAGE_H : STAGE_H;
-  const bgUrl = isMobile ? MOBILE_BG_URL : BG_URL;
+  const bgUrl = isMobile
+    ? MOBILE_BG_URL
+    : pageIndex === 2
+    ? BG_2000S_URL
+    : BG_URL;
 
   return (
     <main
