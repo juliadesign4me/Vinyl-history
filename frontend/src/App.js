@@ -68,16 +68,17 @@ const useIsMobile = () => {
 // (IDs are best-guess from public YouTube; swap any that get geo-blocked or unavailable.)
 const TRACKS_BY_ERA = {
   0: [
-    { id: "ZEcqHA7dbwM", title: "Frank Sinatra — Fly Me to the Moon" },
+    // Verified embeddable IDs (VEVO/official uploads block embed via err 150)
+    { id: "tSGUSALBWN8", title: "Frank Sinatra — Fly Me to the Moon (Live)" },
     {
-      id: "OAVZuSoP8dk",
+      id: "ClXIOmcNhrU",
       title: "Ella Fitzgerald & Louis Armstrong — Dream a Little Dream of Me",
     },
     {
       id: "8of3uhG1tCI",
       title: "The Andrews Sisters — Boogie Woogie Bugle Boy",
     },
-    { id: "3C5zYKIuoxg", title: "Billie Holiday — I'll Be Seeing You" },
+    { id: "KQNnIHNHnnY", title: "Billie Holiday — I'll Be Seeing You" },
   ],
 };
 
@@ -115,13 +116,17 @@ const Home = () => {
 
   // Lazy-load the YouTube IFrame API + build a hidden player on mount.
   useEffect(() => {
-    if (!window.YT) {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.head.appendChild(tag);
-    }
+    let cancelled = false;
     const initPlayer = () => {
-      if (ytPlayerRef.current) return;
+      if (cancelled || ytPlayerRef.current) return;
+      const host = document.getElementById("yt-player-host");
+      if (!host) {
+        // eslint-disable-next-line no-console
+        console.warn("[YT] host element missing");
+        return;
+      }
+      // eslint-disable-next-line no-undef, no-console
+      console.log("[YT] init player");
       // eslint-disable-next-line no-undef
       ytPlayerRef.current = new window.YT.Player("yt-player-host", {
         height: "1",
@@ -136,6 +141,8 @@ const Home = () => {
         events: {
           onReady: () => {
             ytReadyRef.current = true;
+            // eslint-disable-next-line no-console
+            console.log("[YT] ready");
             try {
               ytPlayerRef.current.unMute();
               ytPlayerRef.current.setVolume(80);
@@ -150,7 +157,6 @@ const Home = () => {
               "for id",
               currentTrackIdRef.current
             );
-            // Skip to next track sooner
             if (trackTimerRef.current) clearTimeout(trackTimerRef.current);
             trackTimerRef.current = setTimeout(() => {
               if (currentEraRef.current !== null) {
@@ -161,16 +167,26 @@ const Home = () => {
         },
       });
     };
-    if (window.YT && window.YT.Player) {
+
+    // Attach the callback BEFORE the script runs so we don't miss the event.
+    const prevReady = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      if (typeof prevReady === "function") prevReady();
       initPlayer();
-    } else {
-      const prev = window.onYouTubeIframeAPIReady;
-      window.onYouTubeIframeAPIReady = () => {
-        if (typeof prev === "function") prev();
-        initPlayer();
-      };
+    };
+
+    if (window.YT && window.YT.Player) {
+      // Script already loaded earlier (HMR / repeated mount) — init right away.
+      initPlayer();
+    } else if (!document.getElementById("yt-iframe-api-script")) {
+      const tag = document.createElement("script");
+      tag.id = "yt-iframe-api-script";
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(tag);
     }
+
     return () => {
+      cancelled = true;
       if (trackTimerRef.current) clearTimeout(trackTimerRef.current);
     };
   }, []);
@@ -480,7 +496,7 @@ const Home = () => {
           alt=""
           draggable={false}
           decoding="async"
-          fetchpriority="high"
+          fetchPriority="high"
           className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
         />
 
