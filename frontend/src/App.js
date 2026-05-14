@@ -27,6 +27,9 @@ const TONEARM_2000S_URL =
 const TONEARM_1970S_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/6uljltir_torn%201970.png";
 
+const TONEARM_1940S_URL =
+  "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/nsi5elcs_torn%201940.png";
+
 // Desktop stage = container with the SAME aspect ratio as the bg image (2048 x 1152).
 const STAGE_W = 2048;
 const STAGE_H = 1152;
@@ -582,6 +585,8 @@ const Home = () => {
                 ? TONEARM_2000S_URL
                 : pageIndex === 1
                 ? TONEARM_1970S_URL
+                : pageIndex === 0
+                ? TONEARM_1940S_URL
                 : TONEARM_URL
             }
             alt="tonearm"
