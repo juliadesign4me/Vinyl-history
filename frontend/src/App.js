@@ -485,7 +485,7 @@ const Home = () => {
           style={{
             left: "50%",
             bottom: isMobile
-              ? `calc(${pct(320, stageH)} + 20%)`
+              ? `calc(${pct(320, stageH)} + 10%)`
               : pct(145, stageH),
             width: isMobile ? 270 : pct(460, stageW),
             aspectRatio: "1 / 1",
