@@ -240,7 +240,7 @@ const Home = () => {
                   width: "100%",
                   textAlign: "center",
                   fontFamily: '"Instrument Serif", serif',
-                  fontSize: "64px",
+                  fontSize: "60px",
                   lineHeight: 1,
                   fontWeight: 400,
                   textTransform: "lowercase",
@@ -282,7 +282,7 @@ const Home = () => {
               ? {
                   left: 0,
                   right: 0,
-                  top: pct(60 + 64 + 30, stageH),
+                  top: pct(60 + 60 + 16, stageH),
                   width: "100%",
                   textAlign: "center",
                   fontFamily: '"Abyssinica SIL", serif',
