@@ -31,6 +31,27 @@ const TONEARM_1970S_URL =
 const TONEARM_1940S_URL =
   "https://customer-assets.emergentagent.com/job_bg-canvas-5/artifacts/nsi5elcs_torn%201940.png";
 
+// Era-indexed lookup maps (0=1940s, 1=1970s, 2=2000s, 3=2020s)
+const BG_BY_ERA = [BG_1940S_URL, BG_1970S_URL, BG_2000S_URL, BG_URL];
+const MOBILE_BG_BY_ERA = [
+  MOBILE_BG_1940S_URL,
+  MOBILE_BG_1970S_URL,
+  MOBILE_BG_2000S_URL,
+  MOBILE_BG_URL,
+];
+const VINYL_DISK_BY_ERA = [
+  "/assets/vinyl-disk-1940s.png",
+  "/assets/vinyl-disk-1970s.png",
+  "/assets/vinyl-disk-2000s.png",
+  "/assets/vinyl-disk.png",
+];
+const TONEARM_BY_ERA = [
+  TONEARM_1940S_URL,
+  TONEARM_1970S_URL,
+  TONEARM_2000S_URL,
+  TONEARM_URL,
+];
+
 // Desktop stage = container with the SAME aspect ratio as the bg image (2048 x 1152).
 const STAGE_W = 2048;
 const STAGE_H = 1152;
@@ -167,7 +188,10 @@ const Home = () => {
             try {
               ytPlayerRef.current.unMute();
               ytPlayerRef.current.setVolume(80);
-            } catch (_) {}
+            } catch (err) {
+              // eslint-disable-next-line no-console
+              console.warn("[YT] unMute/setVolume failed", err);
+            }
           },
           onError: (e) => {
             // 2 = invalid id, 5 = HTML5 player error, 100 = removed, 101/150 = embed disallowed
@@ -242,7 +266,10 @@ const Home = () => {
       });
       ytPlayerRef.current.unMute && ytPlayerRef.current.unMute();
       ytPlayerRef.current.setVolume && ytPlayerRef.current.setVolume(80);
-    } catch (_) {}
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.warn("[YT] loadVideoById failed", err);
+    }
     if (trackTimerRef.current) clearTimeout(trackTimerRef.current);
     trackTimerRef.current = setTimeout(
       () => playRandomTrackForEra(era),
@@ -263,7 +290,10 @@ const Home = () => {
     if (ytPlayerRef.current && ytPlayerRef.current.stopVideo) {
       try {
         ytPlayerRef.current.stopVideo();
-      } catch (_) {}
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn("[YT] stopVideo failed", err);
+      }
     }
   };
 
@@ -458,7 +488,10 @@ const Home = () => {
     if (e.pointerId !== undefined && wrap.setPointerCapture) {
       try {
         wrap.setPointerCapture(e.pointerId);
-      } catch (_) {}
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.warn("[tonearm] setPointerCapture failed", err);
+      }
     }
   };
 
@@ -468,21 +501,7 @@ const Home = () => {
   // Active stage dimensions (desktop vs mobile)
   const stageW = isMobile ? MOBILE_STAGE_W : STAGE_W;
   const stageH = isMobile ? MOBILE_STAGE_H : STAGE_H;
-  const bgUrl = isMobile
-    ? pageIndex === 2
-      ? MOBILE_BG_2000S_URL
-      : pageIndex === 1
-      ? MOBILE_BG_1970S_URL
-      : pageIndex === 0
-      ? MOBILE_BG_1940S_URL
-      : MOBILE_BG_URL
-    : pageIndex === 2
-    ? BG_2000S_URL
-    : pageIndex === 1
-    ? BG_1970S_URL
-    : pageIndex === 0
-    ? BG_1940S_URL
-    : BG_URL;
+  const bgUrl = isMobile ? MOBILE_BG_BY_ERA[pageIndex] : BG_BY_ERA[pageIndex];
 
   return (
     <main
@@ -636,7 +655,7 @@ const Home = () => {
               const active = idx === pageIndex;
               const fontPx = active ? 30 : 20;
               return (
-                <div key={idx}>
+                <div key={label}>
                   <div
                     data-testid={`tick-${idx}`}
                     className="absolute"
@@ -800,15 +819,7 @@ const Home = () => {
             className="vinyl-disk cursor-pointer w-full h-full"
           >
             <img
-              src={
-                pageIndex === 2
-                  ? "/assets/vinyl-disk-2000s.png"
-                  : pageIndex === 1
-                  ? "/assets/vinyl-disk-1970s.png"
-                  : pageIndex === 0
-                  ? "/assets/vinyl-disk-1940s.png"
-                  : "/assets/vinyl-disk.png"
-              }
+              src={VINYL_DISK_BY_ERA[pageIndex]}
               alt="vinyl disk"
               decoding="async"
               className="w-full h-full block select-none vinyl-spin"
@@ -842,15 +853,7 @@ const Home = () => {
           }}
         >
           <img
-            src={
-              pageIndex === 2
-                ? TONEARM_2000S_URL
-                : pageIndex === 1
-                ? TONEARM_1970S_URL
-                : pageIndex === 0
-                ? TONEARM_1940S_URL
-                : TONEARM_URL
-            }
+            src={TONEARM_BY_ERA[pageIndex]}
             alt="tonearm"
             draggable={false}
             decoding="async"
