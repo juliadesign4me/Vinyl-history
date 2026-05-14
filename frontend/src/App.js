@@ -519,7 +519,7 @@ const Home = () => {
           className="absolute select-none cursor-grab active:cursor-grabbing"
           style={{
             left: isMobile
-              ? `calc(50% + ${pct(238, stageW)} + 3%)`
+              ? `calc(50% + ${pct(238, stageW)} + 5%)`
               : `calc(50% + ${pct(238, stageW)})`,
             bottom: isMobile
               ? `calc(${pct(139, stageH)} + 30%)`
