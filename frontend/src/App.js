@@ -507,7 +507,11 @@ const Home = () => {
             className="vinyl-disk cursor-pointer w-full h-full"
           >
             <img
-              src="/assets/vinyl-disk.png"
+              src={
+                pageIndex === 2
+                  ? "/assets/vinyl-disk-2000s.png"
+                  : "/assets/vinyl-disk.png"
+              }
               alt="vinyl disk"
               className="w-full h-full block select-none vinyl-spin"
               style={{
